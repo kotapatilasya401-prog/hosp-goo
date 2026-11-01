@@ -1,0 +1,674 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MediCare Hospital Management</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lucide@latest"></script>
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Poppins',sans-serif;background:#fff8fc;color:#30264b}
+button,input,select,textarea{font-family:inherit}
+button{cursor:pointer}
+:root{
+--purple:#7041d9;
+--pink:#ed4f9b;
+--orange:#ff963d;
+--teal:#13bda5;
+--blue:#4389f5;
+--light:#fff8fc;
+--text:#30264b;
+--muted:#8c849d;
+}
+.sidebar{
+position:fixed;left:0;top:0;bottom:0;width:245px;
+background:linear-gradient(165deg,#6135ca,#8c48d9 65%,#bc53c6);
+color:white;padding:23px 16px;z-index:50;
+display:flex;flex-direction:column;overflow-y:auto;
+}
+.logo{display:flex;align-items:center;gap:11px;padding:5px 8px 27px;border-bottom:1px solid #ffffff30}
+.logo-icon{width:45px;height:45px;background:white;color:#7543d5;border-radius:15px;display:grid;place-items:center;font-size:25px}
+.logo h2{font-size:19px;font-weight:800}
+.logo p{font-size:9px;letter-spacing:2px;opacity:.75}
+.nav-heading{font-size:10px;letter-spacing:2px;opacity:.65;margin:28px 12px 12px}
+.nav-link{display:flex;align-items:center;gap:13px;padding:13px 14px;margin:4px 0;border-radius:12px;color:#ffffffcf;font-size:12px;font-weight:600;transition:.2s;cursor:pointer}
+.nav-link:hover,.nav-link.active{background:#ffffff28;color:white;box-shadow:inset 3px 0 white}
+.nav-link i{width:18px;height:18px}
+.sidebar-bottom{margin-top:auto;background:#ffffff20;padding:15px;border-radius:15px}
+.sidebar-bottom p{font-size:11px;line-height:1.8}
+.profile{display:flex;align-items:center;gap:10px;margin-top:18px}
+.avatar{width:37px;height:37px;border-radius:50%;background:#ffe0ed;color:#a53e78;display:grid;place-items:center;font-weight:800}
+.main{margin-left:245px;min-height:100vh}
+.topbar{height:75px;background:white;display:flex;align-items:center;justify-content:space-between;padding:0 30px;position:sticky;top:0;z-index:30;box-shadow:0 3px 15px #6c34800a}
+.topbar h2{font-size:17px}
+.topbar p{font-size:10px;color:var(--muted)}
+.top-actions{display:flex;align-items:center;gap:17px}
+.searchbox{background:#fff6fa;border:1px solid #f6e5ef;border-radius:10px;padding:10px 13px;display:flex;align-items:center;gap:8px}
+.searchbox input{border:0;outline:0;background:transparent;width:170px;font-size:11px}
+.icon-button{border:0;background:#fff0f6;color:#9c4b91;border-radius:11px;padding:10px}
+.content{padding:27px;max-width:1500px;margin:auto}
+.page{display:none;animation:appear .25s ease}
+.page.active{display:block}
+@keyframes appear{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:translateY(0)}}
+.welcome{
+min-height:250px;border-radius:23px;overflow:hidden;position:relative;
+background:linear-gradient(105deg,#6334c9 0%,#9745d1 48%,#ed6cae 100%);
+color:white;display:flex;align-items:center;padding:30px 35px;margin-bottom:23px;
+}
+.welcome-text{position:relative;z-index:2;width:57%}
+.welcome h1{font-size:27px;line-height:1.4;font-weight:800}
+.welcome p{font-size:12px;line-height:1.9;margin-top:10px;max-width:400px;color:#fff1fa}
+.welcome button{margin-top:18px;background:white;color:#713bc8;border:0;padding:11px 19px;border-radius:10px;font-size:11px;font-weight:700}
+.welcome img{position:absolute;right:0;bottom:0;height:100%;width:44%;object-fit:cover;object-position:top center;mask-image:linear-gradient(to right,transparent 0%,black 35%)}
+.section-title{font-size:17px;font-weight:800;margin-bottom:5px}
+.section-sub{font-size:10px;color:var(--muted);margin-bottom:18px}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:15px;margin-bottom:24px}
+.stat{padding:19px;border-radius:17px;color:white;position:relative;overflow:hidden;min-height:125px}
+.stat:nth-child(1){background:linear-gradient(130deg,#7041d9,#a36aef)}
+.stat:nth-child(2){background:linear-gradient(130deg,#ed4f9b,#f78bbb)}
+.stat:nth-child(3){background:linear-gradient(130deg,#ff963d,#ffc16b)}
+.stat:nth-child(4){background:linear-gradient(130deg,#13ad9b,#55d9c1)}
+.stat .stat-icon{font-size:22px;margin-bottom:11px}
+.stat h3{font-size:27px;font-weight:800}
+.stat p{font-size:10px;opacity:.9}
+.stat:after{content:"";position:absolute;width:110px;height:110px;border:18px solid #ffffff18;border-radius:50%;right:-27px;top:-25px}
+.panel{background:white;border-radius:18px;padding:20px;box-shadow:0 5px 22px #8b4b8d0b;border:1px solid #f5eaf3}
+.panel-head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:17px}
+.panel-head h3{font-size:14px;font-weight:800}
+.panel-head p{font-size:10px;color:var(--muted);margin-top:4px}
+.btn{border:0;border-radius:10px;padding:11px 17px;background:var(--purple);color:white;font-size:11px;font-weight:700;transition:.2s}
+.btn:hover{filter:brightness(.92);transform:translateY(-1px)}
+.btn-pink{background:var(--pink)}
+.btn-teal{background:var(--teal)}
+.btn-orange{background:var(--orange)}
+.btn-blue{background:var(--blue)}
+.btn-light{background:#f8efff;color:var(--purple)}
+.dashboard-grid{display:grid;grid-template-columns:1.5fr 1fr;gap:18px}
+.department-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:23px}
+.department{padding:17px 10px;text-align:center;border-radius:15px;cursor:pointer;transition:.2s;border:1px solid transparent}
+.department:hover{transform:translateY(-4px);box-shadow:0 8px 18px #0000000c}
+.department .d-icon{width:45px;height:45px;border-radius:14px;display:grid;place-items:center;margin:0 auto 10px;font-size:22px}
+.department h4{font-size:10px}
+.department:nth-child(1){background:#f2edff;color:#7041d9}
+.department:nth-child(1) .d-icon{background:#e1d5ff}
+.department:nth-child(2){background:#fff0f6;color:#dc438e}
+.department:nth-child(2) .d-icon{background:#ffd6e9}
+.department:nth-child(3){background:#eafaf7;color:#079b89}
+.department:nth-child(3) .d-icon{background:#c9f2e9}
+.department:nth-child(4){background:#fff5e9;color:#e58a2e}
+.department:nth-child(4) .d-icon{background:#ffe5c5}
+.department:nth-child(5){background:#edf4ff;color:#397be1}
+.department:nth-child(5) .d-icon{background:#d7e7ff}
+.table-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;white-space:nowrap;font-size:11px}
+th{text-align:left;background:#fff7fb;color:#a397a9;padding:13px 12px;font-size:10px}
+td{padding:13px 12px;border-bottom:1px solid #f7eff5;color:#61566d}
+.badge{display:inline-block;padding:5px 10px;border-radius:20px;font-size:9px;font-weight:700}
+.pending{background:#fff0d9;color:#c17a15}
+.completed{background:#e0f8ef;color:#148568}
+.ready{background:#eee8ff;color:#7343c9}
+.form-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+.form-group label{display:block;font-size:11px;font-weight:700;color:#6d607d;margin-bottom:7px}
+.field{width:100%;border:1px solid #eadfeb;background:#fffafd;padding:12px;border-radius:10px;outline:none;font-size:11px;color:#453751}
+.field:focus{border-color:#9b6be5;box-shadow:0 0 0 3px #9b6be515}
+.full{grid-column:1/-1}
+.two-panels{display:grid;grid-template-columns:repeat(2,1fr);gap:17px}
+.kids-banner{display:grid;grid-template-columns:1fr 1fr;gap:18px;align-items:center;background:linear-gradient(110deg,#fff0f7,#f1eaff);border-radius:19px;padding:18px;margin-top:20px;overflow:hidden}
+.kids-banner img{width:100%;height:150px;object-fit:cover;border-radius:13px}
+.kids-banner h3{font-size:17px;color:#8c43bd}
+.kids-banner p{font-size:10px;line-height:1.8;color:#87758f;margin-top:7px}
+.doctor-card{display:flex;align-items:center;gap:15px}
+.doctor-card img{width:90px;height:100px;object-fit:cover;border-radius:15px}
+.doctor-card h3{font-size:14px}
+.doctor-card p{font-size:10px;color:var(--muted);margin-top:5px}
+.modal{position:fixed;inset:0;background:#2e174d88;z-index:80;display:none;align-items:center;justify-content:center;padding:15px}
+.modal.show{display:flex}
+.modal-box{background:white;border-radius:20px;padding:24px;width:100%;max-width:510px;max-height:90vh;overflow:auto}
+.toast{position:fixed;bottom:22px;right:22px;background:#392254;color:white;padding:13px 19px;border-radius:11px;display:none;z-index:100;font-size:11px;box-shadow:0 8px 25px #0002}
+.empty{text-align:center;color:#aa9db0;padding:25px;font-size:11px}
+.mobile-menu{display:none}
+@media(max-width:1050px){.stats{grid-template-columns:repeat(2,1fr)}.department-grid{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:760px){
+.sidebar{transform:translateX(-100%);transition:.25s}
+.sidebar.open{transform:translateX(0)}
+.main{margin-left:0}
+.mobile-menu{display:block}
+.content{padding:17px}
+.topbar{padding:0 15px}
+.welcome{min-height:280px;padding:23px}
+.welcome-text{width:75%}
+.welcome h1{font-size:21px}
+.welcome img{opacity:.42;width:65%}
+.dashboard-grid,.two-panels{grid-template-columns:1fr}
+.department-grid{grid-template-columns:repeat(2,1fr)}
+.searchbox{display:none}
+.kids-banner{grid-template-columns:1fr}
+}
+@media(max-width:420px){.stats{grid-template-columns:1fr 1fr}.stat{padding:14px}.stat h3{font-size:23px}.form-grid{grid-template-columns:1fr}.full{grid-column:auto}}
+</style>
+</head>
+
+<body>
+
+<aside class="sidebar" id="sidebar">
+  <div class="logo">
+    <div class="logo-icon">✚</div>
+    <div>
+      <h2>MediCare</h2>
+      <p>HOSPITAL & HEALTHCARE</p>
+    </div>
+  </div>
+
+  <p class="nav-heading">MAIN MENU</p>
+  <div class="nav-link active" data-page="dashboard"><i data-lucide="layout-dashboard"></i> Dashboard</div>
+  <div class="nav-link" data-page="reception"><i data-lucide="users"></i> Reception</div>
+  <div class="nav-link" data-page="doctor"><i data-lucide="stethoscope"></i> Doctor</div>
+  <div class="nav-link" data-page="lab"><i data-lucide="flask-conical"></i> Laboratory</div>
+  <div class="nav-link" data-page="pharmacy"><i data-lucide="pill"></i> Pharmacy</div>
+  <div class="nav-link" data-page="billing"><i data-lucide="receipt"></i> Billing</div>
+
+  <p class="nav-heading">PREFERENCES</p>
+  <div class="nav-link" data-page="settings"><i data-lucide="settings"></i> Settings</div>
+
+  <div class="sidebar-bottom">
+    <p>💜 <b>Care with Love!</b></p>
+    <p>Making healthcare simple, friendly and accessible.</p>
+  </div>
+
+  <div class="profile">
+    <div class="avatar">AD</div>
+    <div><b style="font-size:11px">Administrator</b><p style="font-size:9px;opacity:.7">Hospital Admin</p></div>
+  </div>
+</aside>
+
+<main class="main">
+<header class="topbar">
+  <div style="display:flex;align-items:center;gap:12px">
+    <button class="icon-button mobile-menu" onclick="toggleSidebar()"><i data-lucide="menu"></i></button>
+    <div><h2 id="pageTitle">Dashboard</h2><p>Welcome to MediCare Hospital</p></div>
+  </div>
+  <div class="top-actions">
+    <div class="searchbox"><i data-lucide="search" style="width:15px"></i><input id="globalSearch" placeholder="Search patient ID..." onkeydown="globalSearch(event)"></div>
+    <button class="icon-button" onclick="notify('You are all caught up!')"><i data-lucide="bell"></i></button>
+    <div class="avatar">AD</div>
+  </div>
+</header>
+
+<div class="content">
+
+<!-- DASHBOARD -->
+<section id="dashboard" class="page active">
+
+<div class="welcome">
+  <div class="welcome-text">
+    <p style="font-size:10px;font-weight:700;letter-spacing:2px">WELCOME TO MEDICARE</p>
+    <h1>Your Health,<br>Our Happiness! 💜</h1>
+    <p>Quality healthcare, caring doctors and a healthier tomorrow. We are here for every step of your health journey.</p>
+    <button onclick="navigate('reception')">Register New Patient →</button>
+  </div>
+  <img src="https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=800&auto=format&fit=crop&q=85" alt="Female doctor">
+</div>
+
+<div class="stats">
+  <div class="stat"><div class="stat-icon">👨‍👩‍👧</div><h3 id="totalPatients">0</h3><p>Total Registered Patients</p></div>
+  <div class="stat"><div class="stat-icon">🧪</div><h3 id="totalTests">0</h3><p>Prescribed Lab Tests</p></div>
+  <div class="stat"><div class="stat-icon">💊</div><h3 id="totalMedicines">0</h3><p>Medicine Prescriptions</p></div>
+  <div class="stat"><div class="stat-icon">📋</div><h3 id="totalResults">0</h3><p>Completed Lab Reports</p></div>
+</div>
+
+<h3 class="section-title">Our Departments</h3>
+<p class="section-sub">Select a department to get started.</p>
+
+<div class="department-grid">
+  <div class="department" onclick="navigate('reception')"><div class="d-icon">🧑‍💼</div><h4>Reception</h4></div>
+  <div class="department" onclick="navigate('doctor')"><div class="d-icon">👩‍⚕️</div><h4>Doctor</h4></div>
+  <div class="department" onclick="navigate('lab')"><div class="d-icon">🔬</div><h4>Laboratory</h4></div>
+  <div class="department" onclick="navigate('pharmacy')"><div class="d-icon">💊</div><h4>Pharmacy</h4></div>
+  <div class="department" onclick="navigate('billing')"><div class="d-icon">🧾</div><h4>Billing</h4></div>
+</div>
+
+<div class="dashboard-grid">
+  <div class="panel">
+    <div class="panel-head"><div><h3>Recent Patients 👥</h3><p>Latest patient registrations</p></div><button class="btn btn-light" onclick="navigate('reception')">View All</button></div>
+    <div class="table-wrap"><table><thead><tr><th>PATIENT</th><th>ID</th><th>AGE</th><th>DISEASE</th></tr></thead><tbody id="dashboardPatients"></tbody></table></div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-head"><div><h3>Meet Our Doctor 👩‍⚕️</h3><p>Friendly healthcare professionals</p></div></div>
+    <div class="doctor-card">
+      <img src="https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=300&auto=format&fit=crop&q=80" alt="Doctor profile">
+      <div><h3>Dr. Ananya Sharma</h3><p>General Physician</p><p style="color:#13a58e">● Available for consultation</p></div>
+    </div>
+    <div class="kids-banner" style="grid-template-columns:1fr;margin-top:17px">
+      <div><h3>Little Smiles, Healthy Lives! 🧸</h3><p>Special care and a welcoming environment for children.</p></div>
+      <img src="https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?w=500&auto=format&fit=crop&q=80" alt="Happy child">
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- RECEPTION -->
+<section id="reception" class="page">
+  <div class="panel-head"><div><h2 class="section-title">Patient Reception 🧑‍💼</h2><p class="section-sub">Register and manage patient records.</p></div><button class="btn btn-pink" onclick="openModal()">＋ Register Patient</button></div>
+  <div class="panel">
+    <div class="panel-head"><h3>Patient Records</h3><input id="patientSearch" class="field" style="max-width:230px" placeholder="Search patient..." oninput="renderPatients()"></div>
+    <div class="table-wrap"><table><thead><tr><th>Patient ID</th><th>Name</th><th>Age</th><th>Gender</th><th>Disease</th><th>Status</th><th>Action</th></tr></thead><tbody id="patientTable"></tbody></table></div>
+  </div>
+</section>
+
+<!-- DOCTOR -->
+<section id="doctor" class="page">
+  <h2 class="section-title">Doctor Workstation 👩‍⚕️</h2>
+  <p class="section-sub">Consult patients and prescribe treatments.</p>
+
+  <div class="two-panels">
+    <div class="panel">
+      <div class="panel-head"><h3>🔎 Find Patient</h3></div>
+      <div class="form-group"><label>Patient ID</label><input id="doctorId" class="field" placeholder="Example: P001"></div>
+      <button class="btn" style="margin-top:14px" onclick="viewPatient()">Find Patient</button>
+      <div id="patientDetails" style="margin-top:15px"></div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-head"><h3>🧪 Prescribe Laboratory Test</h3></div>
+      <div class="form-group"><label>Patient ID</label><input id="testPatientId" class="field" placeholder="Example: P001"></div>
+      <div class="form-group" style="margin-top:13px"><label>Test Name</label><input id="testName" class="field" placeholder="Example: Blood Test"></div>
+      <button class="btn btn-teal" style="margin-top:14px" onclick="prescribeTest()">Prescribe Test</button>
+    </div>
+
+    <div class="panel">
+      <div class="panel-head"><h3>💊 Prescribe Medicine</h3></div>
+      <div class="form-group"><label>Patient ID</label><input id="medicinePatientId" class="field" placeholder="Example: P001"></div>
+      <div class="form-group" style="margin-top:13px"><label>Medicine Name</label><input id="medicineName" class="field" placeholder="Medicine name"></div>
+      <div class="form-group" style="margin-top:13px"><label>Quantity</label><input id="medicineQty" type="number" min="1" class="field" placeholder="Quantity"></div>
+      <button class="btn btn-pink" style="margin-top:14px" onclick="prescribeMedicine()">Prescribe Medicine</button>
+    </div>
+
+    <div class="panel">
+      <div class="panel-head"><h3>📋 Prescribed Tests</h3></div>
+      <div class="table-wrap"><table><thead><tr><th>Patient</th><th>Test</th><th>Status</th></tr></thead><tbody id="doctorTests"></tbody></table></div>
+    </div>
+  </div>
+</section>
+
+<!-- LAB -->
+<section id="lab" class="page">
+  <h2 class="section-title">Laboratory 🔬</h2>
+  <p class="section-sub">Manage tests and submit laboratory reports.</p>
+  <div class="two-panels">
+    <div class="panel">
+      <div class="panel-head"><h3>Upload Test Result</h3></div>
+      <div class="form-group"><label>Patient ID</label><input id="resultPatientId" class="field" placeholder="Example: P001"></div>
+      <div class="form-group" style="margin-top:13px"><label>Prescribed Test</label><select id="resultTest" class="field"></select></div>
+      <div class="form-group" style="margin-top:13px"><label>Test Result</label><textarea id="resultValue" class="field" rows="4" placeholder="Enter test result"></textarea></div>
+      <div class="form-group" style="margin-top:13px"><label>Report File (Optional)</label><input type="file" id="resultFile" class="field"></div>
+      <button class="btn btn-teal" style="margin-top:15px" onclick="uploadResult()">Submit Result</button>
+    </div>
+    <div class="panel">
+      <div class="panel-head"><h3>Completed Reports</h3></div>
+      <div id="labReports"></div>
+    </div>
+  </div>
+</section>
+
+<!-- PHARMACY -->
+<section id="pharmacy" class="page">
+  <h2 class="section-title">Pharmacy 💊</h2>
+  <p class="section-sub">View medicines prescribed by the doctor.</p>
+  <div class="panel" style="max-width:600px">
+    <div class="form-group"><label>Patient ID</label><input id="pharmacyId" class="field" placeholder="Example: P001"></div>
+    <button class="btn btn-orange" style="margin-top:14px" onclick="viewMedicines()">View Medicines</button>
+  </div>
+  <div class="panel" style="margin-top:18px">
+    <div class="panel-head"><h3>Medicine Records</h3></div>
+    <div class="table-wrap"><table><thead><tr><th>Patient ID</th><th>Medicine Name</th><th>Quantity</th></tr></thead><tbody id="medicineList"></tbody></table></div>
+  </div>
+</section>
+
+<!-- BILLING -->
+<section id="billing" class="page">
+  <h2 class="section-title">Billing & Payments 🧾</h2>
+  <p class="section-sub">Generate patient bills and calculate charges.</p>
+  <div class="two-panels">
+    <div class="panel">
+      <div class="panel-head"><h3>Generate Patient Bill</h3></div>
+      <div class="form-group"><label>Patient ID</label><input id="billingId" class="field" placeholder="Example: P001"></div>
+      <button class="btn btn-orange" style="margin-top:14px" onclick="generateBill()">Generate Bill</button>
+      <div id="bill" style="margin-top:20px"></div>
+    </div>
+    <div class="panel">
+      <div class="panel-head"><h3>Billing Information</h3></div>
+      <div style="background:#fff0f6;padding:20px;border-radius:15px">
+        <p style="font-size:11px;color:#a05b82">Consultation Fee</p>
+        <h2 style="font-size:30px;color:#e34e97">₹500</h2>
+      </div>
+      <p style="font-size:10px;color:#9a8da0;margin-top:14px;line-height:1.8">Demo medicine charge: ₹50 per unit. The bill uses the quantities prescribed by the doctor.</p>
+    </div>
+  </div>
+  <div class="panel" style="margin-top:18px">
+    <div class="panel-head"><h3>Billing History</h3></div>
+    <div class="table-wrap"><table><thead><tr><th>Patient ID</th><th>Consultation</th><th>Medicine Charges</th><th>Total</th></tr></thead><tbody id="billHistory"></tbody></table></div>
+  </div>
+</section>
+
+<!-- SETTINGS -->
+<section id="settings" class="page">
+  <h2 class="section-title">Settings ⚙️</h2>
+  <p class="section-sub">Manage hospital information.</p>
+  <div class="panel" style="max-width:550px">
+    <div class="form-group"><label>Hospital Name</label><input class="field" value="MediCare Hospital"></div>
+    <div class="form-group" style="margin-top:15px"><label>Consultation Fee (₹)</label><input id="consultationFee" type="number" min="0" class="field" value="500"></div>
+    <button class="btn" style="margin-top:15px" onclick="saveSettings()">Save Settings</button>
+  </div>
+</section>
+
+<footer style="text-align:center;color:#ad9fb0;font-size:10px;padding:30px 0">© 2026 MediCare Hospital · Caring for every generation 💜</footer>
+</div>
+</main>
+
+<!-- REGISTRATION MODAL -->
+<div class="modal" id="registrationModal">
+<div class="modal-box">
+  <div class="panel-head"><div><h2 style="font-size:18px">New Patient Registration 🩷</h2><p style="font-size:10px;color:#998da2;margin-top:5px">Enter patient details below.</p></div><button onclick="closeModal()">✕</button></div>
+  <form id="registrationForm">
+    <div class="form-group"><label>Patient ID (Automatic)</label><input id="patientId" class="field" readonly style="background:#f4edff;color:#7140ca;font-weight:700"></div>
+    <div class="form-grid" style="margin-top:13px">
+      <div class="form-group full"><label>Patient Name</label><input id="patientName" class="field" required placeholder="Enter full name"></div>
+      <div class="form-group"><label>Age</label><input id="patientAge" type="number" min="1" max="120" class="field" required></div>
+      <div class="form-group"><label>Gender</label><select id="patientGender" class="field" required><option value="">Select</option><option>Male</option><option>Female</option><option>Other</option></select></div>
+      <div class="form-group full"><label>Disease / Health Concern</label><input id="patientDisease" class="field" required placeholder="Enter health concern"></div>
+    </div>
+    <div style="display:flex;gap:10px;margin-top:20px">
+      <button type="button" class="btn btn-light" style="flex:1" onclick="closeModal()">Cancel</button>
+      <button type="submit" class="btn btn-pink" style="flex:1">Register Patient</button>
+    </div>
+  </form>
+</div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+let patients=[];
+let medicines=[];
+let tests=[];
+let results=[];
+let bills=[];
+let patientNumber=1;
+let consultationFee=500;
+
+const $=id=>document.getElementById(id);
+
+function escapeHTML(value){
+ return String(value).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+function notify(message){
+ const t=$('toast');
+ t.textContent=message;
+ t.style.display='block';
+ clearTimeout(window.toastTimer);
+ window.toastTimer=setTimeout(()=>t.style.display='none',2800);
+}
+
+function toggleSidebar(){
+ $('sidebar').classList.toggle('open');
+}
+
+function navigate(page){
+ document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+ document.querySelectorAll('.nav-link').forEach(n=>n.classList.remove('active'));
+ $(page).classList.add('active');
+ const nav=document.querySelector(`[data-page="${page}"]`);
+ if(nav)nav.classList.add('active');
+ const titles={dashboard:'Dashboard',reception:'Reception',doctor:'Doctor Workstation',lab:'Laboratory',pharmacy:'Pharmacy',billing:'Billing & Payments',settings:'Settings'};
+ $('pageTitle').textContent=titles[page];
+ $('sidebar').classList.remove('open');
+
+ if(page==='dashboard')updateDashboard();
+ if(page==='reception')renderPatients();
+ if(page==='doctor')renderDoctorTests();
+ if(page==='lab'){renderLabTests();renderLabReports();}
+}
+
+document.querySelectorAll('[data-page]').forEach(n=>{
+ n.addEventListener('click',()=>navigate(n.dataset.page));
+});
+
+function generatePatientId(){
+ return 'P'+String(patientNumber).padStart(3,'0');
+}
+
+function openModal(){
+ $('patientId').value=generatePatientId();
+ $('registrationModal').classList.add('show');
+}
+function closeModal(){
+ $('registrationModal').classList.remove('show');
+}
+
+$('registrationForm').addEventListener('submit',function(e){
+ e.preventDefault();
+ const name=$('patientName').value.trim();
+ const age=Number($('patientAge').value);
+ const gender=$('patientGender').value;
+ const disease=$('patientDisease').value.trim();
+
+ if(!name||!Number.isInteger(age)||age<1||age>120||!gender||!disease){
+  notify('Please enter valid patient details.');
+  return;
+ }
+
+ const id=generatePatientId();
+ patients.push({id,name,age,gender,disease,status:'Pending'});
+ patientNumber++;
+ this.reset();
+ closeModal();
+ renderPatients();
+ updateDashboard();
+ notify('Patient registered successfully! '+id);
+});
+
+function badge(status){
+ return `<span class="badge ${status==='Completed'?'completed':'pending'}">${escapeHTML(status)}</span>`;
+}
+
+function renderPatients(){
+ const search=($('patientSearch')?.value||'').toLowerCase();
+ const list=patients.filter(p=>p.name.toLowerCase().includes(search)||p.id.toLowerCase().includes(search));
+
+ $('patientTable').innerHTML=list.map(p=>`
+ <tr>
+ <td style="font-weight:800;color:#7844d2">${escapeHTML(p.id)}</td>
+ <td>${escapeHTML(p.name)}</td><td>${p.age}</td><td>${escapeHTML(p.gender)}</td>
+ <td>${escapeHTML(p.disease)}</td><td>${badge(p.status)}</td>
+ <td><button class="btn btn-light" onclick="viewRecord('${p.id}')">View</button></td>
+ </tr>`).join('')||'<tr><td colspan="7" class="empty">No patients registered yet.</td></tr>';
+}
+
+function viewRecord(id){
+ const p=patients.find(x=>x.id===id);
+ if(!p)return;
+ alert(`Patient ID: ${p.id}\nName: ${p.name}\nAge: ${p.age}\nGender: ${p.gender}\nDisease: ${p.disease}`);
+}
+
+function viewPatient(){
+ const id=$('doctorId').value.trim().toUpperCase();
+ const p=patients.find(x=>x.id===id);
+ if(!p){$('patientDetails').innerHTML='<p style="color:#e34e70;font-size:11px">Patient not found.</p>';return;}
+
+ $('patientDetails').innerHTML=`
+ <div style="background:#f5efff;border-radius:12px;padding:14px;font-size:11px;line-height:2">
+ <b style="color:#7543d2">Patient Details</b><br>
+ ID: ${escapeHTML(p.id)}<br>
+ Name: ${escapeHTML(p.name)}<br>
+ Age: ${p.age}<br>
+ Gender: ${escapeHTML(p.gender)}<br>
+ Disease: ${escapeHTML(p.disease)}
+ </div>`;
+}
+
+function prescribeTest(){
+ const id=$('testPatientId').value.trim().toUpperCase();
+ const test=$('testName').value.trim();
+ if(!patients.some(p=>p.id===id)){notify('Patient not found.');return;}
+ if(!test){notify('Enter test name.');return;}
+ tests.push({patientId:id,test,status:'Pending'});
+ $('testPatientId').value='';
+ $('testName').value='';
+ renderDoctorTests();
+ renderLabTests();
+ updateDashboard();
+ notify('Test prescribed successfully!');
+}
+
+function renderDoctorTests(){
+ $('doctorTests').innerHTML=tests.map(t=>`
+ <tr><td>${escapeHTML(t.patientId)}</td><td>${escapeHTML(t.test)}</td><td>${badge(t.status)}</td></tr>
+ `).join('')||'<tr><td colspan="3" class="empty">No tests prescribed.</td></tr>';
+}
+
+function prescribeMedicine(){
+ const id=$('medicinePatientId').value.trim().toUpperCase();
+ const name=$('medicineName').value.trim();
+ const qty=Number($('medicineQty').value);
+ if(!patients.some(p=>p.id===id)){notify('Patient not found.');return;}
+ if(!name||!Number.isInteger(qty)||qty<1){notify('Enter valid medicine and quantity.');return;}
+ medicines.push({patientId:id,name,qty});
+ $('medicinePatientId').value='';
+ $('medicineName').value='';
+ $('medicineQty').value='';
+ updateDashboard();
+ notify('Medicine prescribed successfully!');
+}
+
+function renderLabTests(){
+ const select=$('resultTest');
+ const available=tests.map((t,i)=>({...t,index:i})).filter(t=>t.status==='Pending');
+ select.innerHTML='<option value="">Select a pending test</option>'+
+ available.map(t=>`<option value="${t.index}">${escapeHTML(t.patientId)} - ${escapeHTML(t.test)}</option>`).join('');
+}
+
+function uploadResult(){
+ const id=$('resultPatientId').value.trim().toUpperCase();
+ const index=$('resultTest').value;
+ const value=$('resultValue').value.trim();
+ const file=$('resultFile').files[0];
+
+ if(!patients.some(p=>p.id===id)){notify('Patient not found.');return;}
+ if(index===''||!value){notify('Select a test and enter result.');return;}
+
+ const test=tests[Number(index)];
+ if(!test||test.patientId!==id||test.status!=='Pending'){
+  notify('Please select a pending test for this patient.');
+  return;
+ }
+
+ results.push({patientId:id,test:test.test,result:value,file:file?.name||'No attachment'});
+ test.status='Completed';
+
+ $('resultPatientId').value='';
+ $('resultTest').value='';
+ $('resultValue').value='';
+ $('resultFile').value='';
+
+ renderLabTests();
+ renderLabReports();
+ renderDoctorTests();
+ updateDashboard();
+ notify('Laboratory result submitted!');
+}
+
+function renderLabReports(){
+ $('labReports').innerHTML=results.map(r=>`
+ <div style="background:#effaf7;padding:14px;border-radius:12px;margin-bottom:10px;font-size:11px">
+ <b>${escapeHTML(r.test)}</b> <span class="badge completed">Completed</span>
+ <p style="margin-top:7px;color:#766a80">Patient: ${escapeHTML(r.patientId)}</p>
+ <p style="margin-top:5px">Result: ${escapeHTML(r.result)}</p>
+ <p style="margin-top:5px;color:#9b8ba4">File: ${escapeHTML(r.file)}</p>
+ </div>`).join('')||'<p class="empty">No reports uploaded yet.</p>';
+}
+
+function viewMedicines(){
+ const id=$('pharmacyId').value.trim().toUpperCase();
+ if(!patients.some(p=>p.id===id)){notify('Patient not found.');return;}
+ const list=medicines.filter(m=>m.patientId===id);
+ $('medicineList').innerHTML=list.map(m=>`
+ <tr><td>${escapeHTML(m.patientId)}</td><td>${escapeHTML(m.name)}</td><td>${m.qty}</td></tr>
+ `).join('')||'<tr><td colspan="3" class="empty">No medicines prescribed.</td></tr>';
+}
+
+function generateBill(){
+ const id=$('billingId').value.trim().toUpperCase();
+ const patient=patients.find(p=>p.id===id);
+ if(!patient){notify('Patient not found.');return;}
+
+ const list=medicines.filter(m=>m.patientId===id);
+ const medicineCost=list.reduce((sum,m)=>sum+m.qty*50,0);
+ const total=consultationFee+medicineCost;
+
+ bills.push({id,consultation:consultationFee,medicine:medicineCost,total});
+
+ $('bill').innerHTML=`
+ <div style="border:1px dashed #c9b0e8;padding:18px;border-radius:13px;background:#fffaff">
+ <div style="text-align:center;margin-bottom:18px"><h3 style="color:#7541cf">✚ MediCare Hospital</h3><p style="font-size:9px;color:#9c8ba5">PATIENT INVOICE</p></div>
+ <p style="font-size:11px;margin:7px 0">Patient ID: <b>${escapeHTML(id)}</b></p>
+ <p style="font-size:11px;margin:7px 0">Patient Name: <b>${escapeHTML(patient.name)}</b></p>
+ <hr style="border:0;border-top:1px dashed #ddd;margin:13px 0">
+ <div style="display:flex;justify-content:space-between;font-size:11px;margin:10px 0"><span>Consultation Fee</span><b>₹${consultationFee}</b></div>
+ <div style="display:flex;justify-content:space-between;font-size:11px;margin:10px 0"><span>Medicine Charges</span><b>₹${medicineCost}</b></div>
+ <hr style="border:0;border-top:1px dashed #ddd;margin:13px 0">
+ <div style="display:flex;justify-content:space-between;color:#7541cf;font-size:15px"><b>Total Amount</b><b>₹${total}</b></div>
+ <button class="btn btn-pink" style="width:100%;margin-top:18px" onclick="window.print()">Print Bill</button>
+ </div>`;
+
+ renderBillHistory();
+ notify('Bill generated successfully!');
+}
+
+function renderBillHistory(){
+ $('billHistory').innerHTML=bills.slice().reverse().map(b=>`
+ <tr><td>${escapeHTML(b.id)}</td><td>₹${b.consultation}</td><td>₹${b.medicine}</td><td style="color:#7041d9;font-weight:800">₹${b.total}</td></tr>
+ `).join('')||'<tr><td colspan="4" class="empty">No bills generated.</td></tr>';
+}
+
+function updateDashboard(){
+ $('totalPatients').textContent=patients.length;
+ $('totalTests').textContent=tests.length;
+ $('totalMedicines').textContent=medicines.length;
+ $('totalResults').textContent=results.length;
+
+ $('dashboardPatients').innerHTML=patients.slice().reverse().slice(0,5).map(p=>`
+ <tr><td>${escapeHTML(p.name)}</td><td style="color:#7041d9;font-weight:700">${escapeHTML(p.id)}</td><td>${p.age}</td><td>${escapeHTML(p.disease)}</td></tr>
+ `).join('')||'<tr><td colspan="4" class="empty">No patients registered yet.</td></tr>';
+}
+
+function saveSettings(){
+ const fee=Number($('consultationFee').value);
+ if(!Number.isFinite(fee)||fee<0){notify('Enter a valid consultation fee.');return;}
+ consultationFee=fee;
+ notify('Settings saved successfully!');
+}
+
+function globalSearch(event){
+ if(event.key==='Enter'){
+  navigate('reception');
+  $('patientSearch').value=event.target.value;
+  renderPatients();
+ }
+}
+
+updateDashboard();
+renderPatients();
+renderDoctorTests();
+renderLabReports();
+renderBillHistory();
+lucide.createIcons();
+</script>
+
+</body>
+</html>
